@@ -112,6 +112,39 @@ Examples:
 - “Use-case chính của flow này là gì (top 1)?”
 If the user cannot answer, proceed with clearly labeled **Giả định**.
 
+1.7) Pattern reference self-research (required; before scoring)
+Before you score or critique UI, you must first identify which UI elements likely map to **familiar patterns** for the target platform and user.
+
+- **Goal**: avoid judging visuals in a vacuum; anchor critiques to patterns users already know.
+- **What to do**:
+  - Build a short **Pattern inventory** for the scope:
+    - Navigation: top bar/back, tab bar, bottom sheet, modal, drill-down, search/filter
+    - Lists: list item anatomy, swipe actions, infinite scroll vs pagination
+    - Forms: inline validation, input masks, pickers, steppers
+    - Feedback: toast/snackbar, banners, loaders/skeleton, empty states
+    - Actions: sticky CTA, FAB (if used), contextual actions, overflow menus
+  - For each pattern, label:
+    - **Familiarity**: Familiar / Mixed / Unfamiliar (for RM Retail VN on mobile)
+    - **Risk if unfamiliar**: confusion, wrong-tap, abandonment, compliance risk
+    - **Evidence**: nodeId(s) + screenshot ref(s)
+- **Reference policy (strict)**:
+  - This step is **internet-based self-research** when browsing is available.
+  - Prefer platform canon:
+    - Apple HIG
+    - Material Design
+  - Prefer practical, enterprise-grade pattern libraries:
+    - Mobbin (iOS/Android patterns)
+    - Growth.design (behavioral UX patterns)
+  - Optional (secondary): vendor banking case studies and credible product blogs **only if** they clearly match the UI pattern under review.
+  - If you cannot verify a real link in the current session, do **not** fabricate URLs.
+  - Use either:
+    - **Verified link** (only if you can cite it), or
+    - **Pattern description only** (no link).
+- **Performance guardrail**:
+  - Do not browse broadly. Limit to **3–5 pattern lookups** max, only for patterns that are central or disputed.
+  - If a reference source is paywalled/unreachable, do not spend time brute-forcing; switch to **pattern description only** and note the limitation.
+  - Always pick the **closest match** to the observed UI pattern (e.g., “bottom sheet filter”, “segmented control tabs”, “swipe actions on list row”).
+
 2) Inspect structure (figma plugin API)
 - Use `/figma-use` (Figma MCP `use_figma`) to:
   - find the node across pages
@@ -268,6 +301,14 @@ Return results in this exact structure (Vietnamese only):
   - Touch target (min 44×44px): Pass/Fail/Not verifiable
 - DS compliance score (if applicable):
 - Time-to-complete snapshot (if applicable):
+
+### VI — Pattern inventory (required; familiar patterns)
+- Pattern list (by category):
+  - **Pattern**:
+    - Familiarity (Familiar/Mixed/Unfamiliar):
+    - Why this matters for RM Retail VN:
+    - Evidence (nodeId + screenshot ref):
+    - Reference: Verified link (optional) / Pattern description only
 
 ### VI — Use-case coverage (required; map what exists vs missing)
 - **Covered use-cases (verifiable)**: list use-cases + evidence (frame nodeIds + screenshot refs).
