@@ -108,6 +108,59 @@
 - **P1 – Auditability theo UX** (nếu yêu cầu): “last updated”, nguồn dữ liệu, ai thay đổi trạng thái/owner.
 - **P0 – Data freshness cho dữ liệu quyết định**: nếu dữ liệu ảnh hưởng quyết định (KPI, SLA, trạng thái), phải có cơ chế thể hiện “cập nhật gần nhất/đang đồng bộ/không mới”.
 
+### 2.10 Use-case coverage & Outcome impact (bắt thiếu user-case; P0/P1)
+Mục tiêu: ngoài “đẹp/đúng”, phải đánh giá được **thiết kế đang cover use-case nào và thiếu use-case nào**, đồng thời nêu rõ **tác động tới hành vi và outcome**.
+
+#### 2.10.1 Use-case coverage map (P0)
+- **P0 – Liệt kê use-cases đang cover (verifiable)**.
+  - **Check**: trong scope (1 flow/section), liệt kê tối thiểu các use-case “đã có evidence”:
+    - Tìm/định danh KH (search by phone/ID/account) + chống nhầm
+    - Customer 360 / context nhanh (what matters now)
+    - Ghi nhận tương tác (call/note/activity) + lưu thành công/thất bại
+    - Tạo/đẩy cơ hội/lead/task (nếu có)
+    - Xem pipeline/KPI (nếu có)
+  - **Evidence**: mỗi use-case phải có frame nodeId + screenshot ref.
+- **P0 – Gắn nhãn Not verifiable thay vì đoán**.
+  - **Check**: nếu thiếu frame/state cho offline/sync/error/permission/duplicate/ownership transfer → ghi **Not verifiable**.
+  - **Fail (Score 0)** nếu báo “có state” mà không chỉ được evidence.
+
+#### 2.10.2 Missing user-cases / edge cases (P0/P1)
+- **P0 – Offline/sync + conflict** (khi có nhập liệu trên mobile).
+  - **Check**: Pending sync / Sync failed / Retry / (nếu cần) Conflict guidance.
+  - **Outcome**: tránh mất dữ liệu, giảm “tưởng đã lưu”.
+- **P0 – Permission & masking** (PII).
+  - **Check**: state “no access” có next step; mask mặc định; tránh lộ dữ liệu khi đứng nơi công cộng.
+  - **Outcome**: giảm rủi ro tuân thủ + tăng niềm tin.
+- **P1 – Duplicate / merge/link** (trùng KH).
+  - **Check**: cảnh báo trùng + lựa chọn hợp lý; tránh tạo KH trùng làm bẩn data.
+  - **Outcome**: giảm rework + tăng chất lượng data.
+- **P1 – Ownership transfer / handoff** (bàn giao KH/lead/task).
+  - **Check**: hiển thị owner hiện tại + lịch sử bàn giao + guardrails/confirm.
+  - **Outcome**: giảm knowledge loss khi turnover.
+
+#### 2.10.3 Outcome impact analysis rubric (P1; bắt buộc cho top issues)
+Với **top 3–7 issues**, bắt buộc mô tả theo chuỗi:
+`Element/step → Behavior → Outcome → Evidence`.
+- **Element/step**: thành phần/ bước cụ thể (nodeId).
+- **Behavior**: user sẽ làm gì/né gì (vd: bỏ qua cập nhật, thoát app, ghi chép ngoài).
+- **Outcome** (chọn 1–3): time-to-context, time-to-complete, error rate, adoption, data quality, compliance risk.
+- **Evidence**: frame/nodeId + screenshot ref.
+
+#### 2.10.4 Anti “multi-system hopping” (P1)
+- **P1 – Giảm nhảy hệ thống** (Core/LOS/AML/DMS/CRM).
+  - **Check**: có deep-link/preview/prefill; có “source/freshness” để user tin dữ liệu; tránh bắt user mở 3 app để xong 1 việc.
+  - **Outcome**: giảm thời gian, giảm lỗi copy-paste, tăng adoption.
+
+#### 2.10.5 Vendor implication quick checks (P1; dùng khi dự án target vendor)
+- **P1 – FSC (household/relationships)**:
+  - **Check**: có cách nhìn “nhóm liên quan/household” (nếu nghiệp vụ cần); giảm nhầm KH trùng; relationship context hỗ trợ cross-sell.
+- **P1 – D365 (Customer Insights Data ↔ Journeys)**:
+  - **Check**: UX tăng “data trust” (freshness/source/last sync); giải thích được vì sao gợi ý/segment/journey áp dụng.
+- **P1 – CRMNEXT (action center / account planning)**:
+  - **Check**: ưu tiên actionability (next best action, danh sách việc cần làm, STP few clicks); không để user bị “dashboard-only”.
+- **P1 – Local low/no-code (vd: FPT CX Suite)**:
+  - **Check**: guardrails consistency (naming/tokens/states/role-based layouts) để tránh “mỗi màn một kiểu”.
+
 ---
 
 ## 3) Checklist đặc thù theo flow
