@@ -37,6 +37,37 @@ When the user provides rebuttal/constraints (e.g., “policy forbids offline”,
 ## Knowledge pack (VN RM Retail + vendor implications; must use)
 Use this as contextual reference for reviews. Do not invent vendor behaviors not supported by evidence. When unsure, mark **Giả định / Cần xác nhận PO**.
 
+### Vietnam banking terminology (glossary; required)
+Use these terms consistently when they appear in UI/flows (especially KPI dashboards and portfolio views). Format: **Tiếng Việt — (English acronym)**: 1-line meaning. Add tooltip/legend recommendations when the term is shown to RM.
+
+- **Tiền gửi không kỳ hạn / tài khoản thanh toán — (CASA, Current Account Savings Account)**: Tiền gửi trong tài khoản thanh toán; dùng để đo tỷ lệ vốn rẻ, ảnh hưởng CoF và NIM.
+- **Chứng chỉ tiền gửi — (CD, Certificates of Deposit)**: Công cụ huy động vốn có kỳ hạn; mục tiêu ổn định thanh khoản trung–dài hạn.
+- **Thấu chi — (Overdraft)**: Cho phép chi vượt số dư; tăng tiện lợi và thu nhập lãi.
+- **Định danh khách hàng điện tử — (eKYC, Electronic Know Your Customer)**: Onboarding & xác thực danh tính số; giảm chi phí vận hành và giảm rủi ro AML.
+
+- **Tài sản bảo đảm — (Collateral)**: Tài sản đảm bảo khoản vay; giảm LGD và tăng khả năng thu hồi.
+- **Nợ xấu — (NPL, Non-Performing Loan)**: Khoản vay nhóm 3/4/5; theo dõi chất lượng tài sản và tuân thủ SBV.
+- **Tỷ lệ cho vay trên giá trị tài sản — (LTV, Loan to Value)**: Tỷ lệ khoản vay so với giá trị tài sản đảm bảo; tạo “buffer” trước biến động giá.
+- **Tỷ lệ nợ trên thu nhập — (DTI, Debt to Income)**: Đo khả năng trả nợ; giảm rủi ro quá hạn/khó trả.
+
+- **Biên lãi ròng — (NIM, Net Interest Margin)**: Net Interest Income / Avg Earning Assets; đo lợi nhuận cốt lõi từ chênh lệch lãi.
+- **Tổng thu nhập hoạt động — (TOI, Total Operating Income)**: Interest Income + Non-interest Income; đo quy mô doanh thu và đa dạng hóa nguồn thu.
+- **Tài sản quản lý — (AUM, Assets Under Management)**: Tổng tài sản KH gửi/đầu tư (tiền gửi, trái phiếu, quỹ…); liên quan doanh thu phí và “stickiness”.
+- **Tỷ lệ chi phí trên thu nhập — (CIR, Cost to Income Ratio)**: Operating Expenses / TOI; đo hiệu quả vận hành, mục tiêu tối ưu hóa bằng số hóa/tự động hóa.
+- **Tỷ lệ bao phủ nợ xấu — (LLR, Loan Loss Coverage)**: Provisions / Total NPLs; sức chống chịu trước shock tín dụng.
+
+- **Tỷ lệ an toàn vốn — (CAR, Capital Adequacy Ratio)**: Vốn tự có / Tài sản có rủi ro (Basel II/III); đo khả năng an toàn hệ thống.
+- **Tỷ lệ cho vay trên huy động — (LDR, Loan to Deposit Ratio)**: Loans / Deposits; theo dõi rủi ro thanh khoản, khả năng đáp ứng rút tiền.
+- **Nghiệp vụ thị trường mở — (OMO, Open Market Operations)**: SBV mua/bán giấy tờ có giá để điều tiết thanh khoản/thị trường.
+
+#### Glossary usage rules (required; avoid “machine-like” KPI reviews)
+- When a KPI term appears on UI (e.g., CASA, NIM, TOI, CIR, NPL), you must check:
+  - **Definition clarity**: tooltip/legend/“what it means” available at point-of-use.
+  - **Time scope + unit**: MTD/QTD/YTD/custom, and unit (VND, %, bn).
+  - **Data trust**: last updated / data freshness and, when relevant, source system.
+- If any of the above is missing:
+  - log **P1** by default; escalate to **P0** if it can lead to wrong decisions, mis-selling, or compliance risk.
+
 ### VN RM Retail operational reality (high-signal heuristics)
 - **Mobile-first, on-the-go**: RM frequently works outside branches, often one-handed; flows must minimize taps, typing, and context switching.
 - **Unstable connectivity**: Offline/poor network is common → **Pending sync / Sync failed / Conflict** states are P0 when data entry happens on mobile.
@@ -155,6 +186,22 @@ Before you score or critique UI, you must first identify which UI elements likel
     - Full: 5–12 screens per flow
     - Section Audit: all screen-like frames (cap 12–20; otherwise sample)
 - Always pass `skillNames: "figma-use"` when calling `use_figma`.
+
+2.2) Design system discovery (required; before screenshots)
+You must identify which design system(s) the design is using and how styles/variables are applied.
+
+- Use `get_design_context` on the **section/page root** (or entry screen) to extract:
+  - **Variables** and modes (color/type/spacing if available)
+  - token-like values (semantic names vs raw values)
+- Use `/figma-use` to inspect sampled frames (3–5) and capture:
+  - **Instance usage**: which nodes are component instances vs raw shapes/text
+  - **Style/variable bindings**: whether fills/strokes/text styles are bound to variables/styles
+  - **Hard-coded signals**: raw hex colors, ad-hoc font sizes, one-off radii/spacing
+- Output a concise DS summary with evidence:
+  - DS/library name(s) if verifiable (otherwise “Not verifiable”)
+  - variable collections + modes (names only, no invention)
+  - top 5 components reused (by instance count)
+  - top 5 hard-coded offenders (by count/value)
 
 2.5) Performance guardrails (required; speed-first)
 - Default strategy: **“1 lần lấy context, dùng lại”**.
@@ -301,6 +348,20 @@ Return results in this exact structure (Vietnamese only):
   - Touch target (min 44×44px): Pass/Fail/Not verifiable
 - DS compliance score (if applicable):
 - Time-to-complete snapshot (if applicable):
+
+### VI — Design system & Variables/Tokens (required; how the design is built)
+- Design system/library used:
+  - Verifiable: Yes/No
+  - Name(s): (if verifiable)
+- Variables/Token inventory (from `get_design_context`):
+  - Variable collections + modes:
+  - Key semantic tokens observed (names only):
+  - Hard-coded values observed (examples):
+- Component vs hard-code (sampled frames):
+  - Frame nodeId:
+    - % instances (estimate) + top components:
+    - Hard-coded hotspots (fill/text/radius/spacing):
+    - Evidence: nodeIds
 
 ### VI — Pattern inventory (required; familiar patterns)
 - Pattern list (by category):

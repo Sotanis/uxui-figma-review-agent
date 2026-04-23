@@ -94,6 +94,18 @@
 - **P1 – Thuật ngữ nhất quán**: Lead/Prospect/Customer/Account; KPI tên rõ ràng, tránh viết tắt khó hiểu.
 - **P1 – Copy hướng dẫn hành động**: nút/label dùng động từ cụ thể; tránh “OK/Submit” chung chung.
 
+### 2.6b KPI/Metric clarity (banking) (P0/P1)
+Áp dụng khi UI hiển thị các metric/KPI banking (vd: **CASA, NIM, TOI, CIR, AUM, NPL**).
+- **P0 – Scope thời gian + đơn vị rõ**.
+  - **Check**: MTD/QTD/YTD/custom + đơn vị (VND/%, tỷ/triệu) hiển thị ngay tại điểm xem KPI.
+  - **Fail (Score 0)** nếu số liệu có thể bị hiểu sai do thiếu đơn vị hoặc scope.
+- **P0 – Định nghĩa KPI tại điểm dùng (point-of-use)**.
+  - **Check**: tooltip/legend/“i” giải thích ngắn 1–2 dòng cho acronym; tránh RM đoán sai.
+  - **Fail (Score 0)** nếu KPI ảnh hưởng quyết định (ưu tiên bán, đánh giá hiệu suất) nhưng không có định nghĩa.
+- **P1 – Nguồn dữ liệu + freshness**.
+  - **Check**: “last updated/đang đồng bộ” + (nếu có) nguồn (Core/CRM/DWH) cho KPI quan trọng.
+  - **Outcome**: tăng “data trust”, giảm tranh cãi số liệu và giảm quyết định sai.
+
 ### 2.7 Visual consistency (P1)
 - **P1 – Grid/spacing/type nhất quán**: cùng cấp độ thông tin dùng cùng style.
 - **P1 – Component usage nhất quán**: button/input/chip/tag/status, list item, empty state.
@@ -160,6 +172,37 @@ Với **top 3–7 issues**, bắt buộc mô tả theo chuỗi:
   - **Check**: ưu tiên actionability (next best action, danh sách việc cần làm, STP few clicks); không để user bị “dashboard-only”.
 - **P1 – Local low/no-code (vd: FPT CX Suite)**:
   - **Check**: guardrails consistency (naming/tokens/states/role-based layouts) để tránh “mỗi màn một kiểu”.
+
+### 2.11 Design system / Variables / Tokens / Component reuse (để sub-agent “hiểu thiết kế được xây như thế nào”)
+Mục tiêu: xác định thiết kế đang dùng **Design system nào**, có **Variables/Tokens** gì, và mỗi Page/Frame dùng **component instances** hay **hard-code**.
+
+#### 2.11.1 DS identification (P1)
+- **P1 – Xác định Design System / Library đang dùng (verifiable)**.
+  - **Check**: từ `get_design_context` và/hoặc instance metadata, xác định:
+    - library/DS name (nếu có)
+    - biến/variables collections & modes
+  - **Not verifiable**: nếu không xác định được library name, vẫn phải liệt kê được “dấu hiệu dùng DS” (instance usage, styles/variables binding).
+
+#### 2.11.2 Variables/Tokens inventory (P1)
+- **P1 – Có inventory Variables/Tokens theo scope**.
+  - **Check**: liệt kê collections/modes + token semantic names (không bịa) và chỉ ra nơi dùng.
+  - **Fail (Score 0)** nếu báo “đã dùng variables/tokens” nhưng không có evidence.
+
+#### 2.11.3 Component vs hard-code ratio (P1 → P0 nếu dự án DS-driven)
+- **P1 – Component reuse (instances) chiếm ưu thế cho UI cốt lõi**.
+  - **Check**: các element trọng yếu (button, input, list item, tabs, cards, status tags) là **instance** thay vì tự vẽ.
+  - **Signal**: nếu nhiều “Rectangle/Text” rời rạc tạo thành button/input → khả năng hard-code cao → log risk inconsistency.
+- **P1 – Hard-code hotspot detection**.
+  - **Check**: phát hiện raw hex, font size lẻ, radius/spacing lẻ, shadow lẻ… xuất hiện lặp lại.
+  - **Outcome**: tăng cost implement + khó maintain + dễ lệch theme/dark mode.
+
+#### 2.11.4 Token debt criteria (P1)
+- **P1 – Variable-binding debt (Unbound)**.
+  - **Check**: layer quan trọng (surface/text/border/icon/CTA) phải bind variables/styles; tránh raw values.
+  - **Evidence**: layer name + nodeId + current value + (nếu biết) expected variable/style.
+- **P1 – One-off value debt**.
+  - **Check**: cùng semantic (Primary CTA, status tag) nhưng khác giá trị giữa frames.
+  - **Evidence**: 2–3 nodeIds minh họa + current values.
 
 ---
 
