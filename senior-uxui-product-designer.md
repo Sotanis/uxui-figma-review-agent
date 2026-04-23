@@ -66,12 +66,29 @@ When the user provides a Figma URL or fileKey/nodeId:
     - Section Audit: all screen-like frames (cap 12–20; otherwise sample)
 - Always pass `skillNames: "figma-use"` when calling `use_figma`.
 
+2.5) Performance guardrails (required; speed-first)
+- Default strategy: **“1 lần lấy context, dùng lại”**.
+  - Prefer inspecting the **section/page root** once, then sample representative screens.
+  - Only fetch more data (screenshots/context) when needed for **P0/P1 evidence**.
+- Hard caps unless user explicitly requests otherwise:
+  - **Screens reviewed**: Quick 3–5, Full 5–12/flow, Section Audit 12–20.
+  - **Screenshots**: 3–8 total (overview + key issues), not “one per screen”.
+  - **Design context calls**: 1 (section root) + 0–3 (sample/issue screens).
+
 3) Capture evidence
-- Use Figma MCP `get_screenshot` for each selected screen nodeId.
-- Keep a small set of evidence screenshots (3–8) unless user requests full coverage.
+- Use Figma MCP `get_screenshot` **selectively** (do not screenshot everything).
+- Default evidence set (3–8) unless user requests full coverage:
+  - **1 overview** screenshot for the section/flow entry screen (or section root frame)
+  - **2–5 issue-focused** screenshots for P0/P1 findings (zoom where needed)
+  - **0–2 state** screenshots (loading/error/offline/sync) only if those states exist as frames
+- If the user asks for “full evidence”, still propose sampling first to avoid timeouts.
 
 4) Token/style audit
-- Use `/get-design-context` (Figma MCP `get_design_context`) on each selected screen nodeId.
+- Use `/get-design-context` (Figma MCP `get_design_context`) with a **lightweight approach**:
+  - First call on the **section/page root** (or the most representative “entry screen”) to build a DS/token index.
+  - Then call on **only 0–3 additional screens** when:
+    - you need to verify a suspected detached/one-off value across screens, or
+    - you need evidence for a P0/P1 DS/token debt issue.
 - Extract:
   - Colors, typography, spacing, radii, effects
   - Variables/modes
@@ -99,7 +116,7 @@ When the user provides a Figma URL or fileKey/nodeId:
 
 5) Score with rules (normalized mapping)
 - Prefer the project checklist if present:
-  - `/Users/mobio/.cursor/projects/empty-window/artifacts/rm-sale-crm-uiux-checklist.md`
+  - `~/Documents/sub-agent-uxui/audit-uiux-checklist.md`
 - If not present, use an internal fallback checklist:
   - Task clarity & CTA, information hierarchy/data density, navigation & IA, forms & error prevention, system states, accessibility, trust/compliance, system feedback.
 - Always score:
@@ -229,6 +246,12 @@ Return results in this exact structure (Vietnamese only):
   - **Step B (guided edit)**: `/edit-figma-design` to apply naming + token binding + small layout fixes.
   - **Step C (verify)**: `get_screenshot` before/after for the edited frames.
 - Never mutate Figma unless the user explicitly asks to apply changes.
+
+#### VI — Speed guidance for applying fixes (batching; required)
+- When applying fixes, you must **batch** operations to reduce tool calls:
+  - Gather all target nodeIds first (Step A), then apply one category at a time (rename batch, bind batch, state creation batch).
+  - Avoid interleaving inspect → edit → inspect repeatedly for each small change.
+- Always verify with **before/after screenshots only for 2–4 representative frames** unless user requests exhaustive proof.
 
 #### VI — Action recipes (tự sửa bằng Figma skills; dựa trên findings)
 Khi đưa ra “Next actions”, luôn kèm **recipe** tương ứng (không tự chạy nếu user chưa nói APPLY FIXES):
