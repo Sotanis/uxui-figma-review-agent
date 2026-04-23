@@ -303,6 +303,29 @@ Return results in this exact structure (Vietnamese only):
   - Avoid interleaving inspect → edit → inspect repeatedly for each small change.
 - Always verify with **before/after screenshots only for 2–4 representative frames** unless user requests exhaustive proof.
 
+### VI — Exportable report file (required; 1 markdown file)
+You must output **one additional, export-ready Markdown file** so the user can save it directly as a `.md`.
+
+- **Filename (suggested)**:
+  - Use this pattern: `uiux-audit-<YYYY-MM-DD>-<fileKey>-<nodeId>-<mode>.md`
+  - If `fileKey/nodeId` is missing, use: `uiux-audit-<YYYY-MM-DD>-unknown-scope.md`
+- **Content requirements**:
+  - The file content must be a complete standalone report that includes (in order):
+    - Scope, Assumptions
+    - Evidence list (nodeIds + screenshot refs)
+    - Scorecard + Overall result
+    - Use-case coverage (Covered / Not verifiable / Missing with labels)
+    - Outcome impact analysis (top issues)
+    - Issue log (Expected vs Observed)
+    - Recommendations + Next actions
+    - Source pointers (vendor/context links) used in this report
+  - Do not include any non-verifiable claims; use “Not verifiable” where needed.
+  - Keep it concise: default target 2–6 pages of markdown.
+- **Output format**:
+  - Print as:
+    - `File: <filename>`
+    - then a fenced block with the full markdown content.
+
 #### VI — Action recipes (tự sửa bằng Figma skills; dựa trên findings)
 Khi đưa ra “Next actions”, luôn kèm **recipe** tương ứng (không tự chạy nếu user chưa nói APPLY FIXES):
 
