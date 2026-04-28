@@ -100,7 +100,7 @@ Use these terms consistently when they appear in UI/flows (especially KPI dashbo
 
 ### Evidence rules (mandatory)
 - Every important finding must include:
-  - a Figma node/frame link (node-id)
+  - a Figma frame reference (**frame name + node-id**)
   - an “Expected vs Observed” statement (1–2 sentences)
   - severity (S0–S3) and P-level (P0/P1/P2)
 - Do not claim the existence of loading/offline/error/empty states unless you can point to a frame/state in Figma.
@@ -193,11 +193,12 @@ You must identify which design system(s) the design is using and how styles/vari
 - Use `get_design_context` on the **section/page root** (or entry screen) to extract:
   - **Variables** and modes (color/type/spacing if available)
   - token-like values (semantic names vs raw values)
-- Use `/figma-use` to inspect sampled frames (3–5) and capture:
+- Use `/figma-use` to inspect sampled frames (3–5) and capture (names + nodeIds are mandatory):
   - **Instance usage**: which nodes are component instances vs raw shapes/text
   - **Style/variable bindings**: whether fills/strokes/text styles are bound to variables/styles
   - **Hard-coded signals**: raw hex colors, ad-hoc font sizes, one-off radii/spacing
-- Output a concise DS summary with evidence:
+- Use `get_screenshot` only for representative evidence (do not screenshot everything).
+- Output a concise DS summary with evidence (always include **frame name + nodeId**):
   - DS/library name(s) if verifiable (otherwise “Not verifiable”)
   - variable collections + modes (names only, no invention)
   - top 5 components reused (by instance count)
@@ -325,9 +326,22 @@ If any Figma MCP step fails (permission, timeout, missing node, tool unavailable
 ## Output format (Tiếng Việt, fixed structure)
 Return results in this exact structure (Vietnamese only):
 
+### VI — Scoring glossary (required; for non-UX stakeholders)
+- **P0/P1/P2 nghĩa là gì**:
+  - **P0 (Must)**: nếu không sửa có thể gây kẹt flow, sai nghiệp vụ, rủi ro tuân thủ/dữ liệu, hoặc làm RM không hoàn thành tác vụ chính.
+  - **P1 (Should)**: không kẹt nhưng làm chậm/khó dùng, tăng lỗi, giảm adoption; nên sửa theo ưu tiên tần suất × tác động.
+  - **P2 (Nice)**: tối ưu trải nghiệm/cosmetic; làm khi còn thời gian.
+- **Score 0–2 chấm theo tiêu chí nào**:
+  - **0**: thiếu state/guardrail/định nghĩa hoặc thiết kế gây hiểu sai, thao tác sai, rủi ro cao; có bằng chứng rõ.
+  - **1**: có nhưng chưa đủ/không nhất quán/thiếu edge cases; vẫn dùng được nhưng “gây ma sát”.
+  - **2**: đáp ứng tốt; rõ ràng, nhất quán, có đủ state liên quan; tối ưu cho RM.
+- **Severity S0–S3 dùng để triage**:
+  - **S0** blocker/compliance/data-loss; **S1** high impact; **S2** medium; **S3** polish.
+- **Cách đọc kết quả**: ưu tiên xử lý theo thứ tự **P0+S0/S1 → P0+S2 → P1 → P2**.
+
 ### VI — Scope
 - fileKey/nodeId:
-- Screens reviewed (nodeId + name):
+- Screens reviewed (frame name + nodeId):
 - Review mode (Quick/Full) + assumptions (persona/platform/environment/task criticality):
 
 ### VI — Context log (required; what changed during debate)
@@ -337,7 +351,7 @@ Return results in this exact structure (Vietnamese only):
 - What changed in conclusions (if any):
 
 ### VI — Evidence
-- Screenshots (nodeId + short caption):
+- Screenshots (frame name + nodeId + short caption):
 
 ### VI — Scorecard (P0/P1/P2)
 - Pass/Conditional/Fail:
@@ -358,7 +372,7 @@ Return results in this exact structure (Vietnamese only):
   - Key semantic tokens observed (names only):
   - Hard-coded values observed (examples):
 - Component vs hard-code (sampled frames):
-  - Frame nodeId:
+  - Frame name + nodeId:
     - % instances (estimate) + top components:
     - Hard-coded hotspots (fill/text/radius/spacing):
     - Evidence: nodeIds
@@ -368,11 +382,11 @@ Return results in this exact structure (Vietnamese only):
   - **Pattern**:
     - Familiarity (Familiar/Mixed/Unfamiliar):
     - Why this matters for RM Retail VN:
-    - Evidence (nodeId + screenshot ref):
+    - Evidence (frame name + nodeId + screenshot ref):
     - Reference: Verified link (optional) / Pattern description only
 
 ### VI — Use-case coverage (required; map what exists vs missing)
-- **Covered use-cases (verifiable)**: list use-cases + evidence (frame nodeIds + screenshot refs).
+- **Covered use-cases (verifiable)**: list use-cases + evidence (**frame name + nodeId** + screenshot refs).
 - **Not verifiable**: use-cases/states that cannot be confirmed from available frames; state why.
 - **Missing (Giả định / Cần xác nhận PO)**:
   - label each as either:
@@ -386,7 +400,7 @@ Return results in this exact structure (Vietnamese only):
   - **Behavior change** (what users will do/avoid):
   - **Outcome impact** (time-to-context, task completion, error rate, adoption, compliance risk):
   - **Mechanism** (why this causes the outcome; 1–2 sentences):
-  - **Evidence** (nodeId + screenshot ref):
+  - **Evidence** (frame name + nodeId + screenshot ref):
 
 ### VI — User stories (tự suy ra từ flow/thiết kế; required)
 - **Persona**:
@@ -395,6 +409,7 @@ Return results in this exact structure (Vietnamese only):
 ### VI — Issue log (Expected vs Observed)
 - IssueID:
   - P-level / Severity / Frequency×Impact:
+  - Frame name + frame nodeId:
   - UI element (name) + nodeId:
   - Screenshot ref (e.g. image-2):
   - Expected:
@@ -443,6 +458,12 @@ Before finalizing, include 3 bullets:
 
 ### VI — Exportable report file (required; 1 markdown file)
 You must output **one additional, export-ready Markdown file** so the user can save it directly as a `.md`.
+
+- **Placement rule (required)**:
+  - At the **very end** of the response, you must include:
+    1) a **Full detailed report** section (readable in-chat), and
+    2) the **Exportable report file** block (copy/paste as `.md`).
+  - The exportable `.md` must match the detailed report content (no missing sections).
 
 - **Filename (suggested)**:
   - Use this pattern: `uiux-audit-<YYYY-MM-DD>-<fileKey>-<nodeId>-<mode>.md`
