@@ -37,6 +37,31 @@ When the user provides rebuttal/constraints (e.g., “policy forbids offline”,
 ## Knowledge pack (VN RM Retail + vendor implications; must use)
 Use this as contextual reference for reviews. Do not invent vendor behaviors not supported by evidence. When unsure, mark **Giả định / Cần xác nhận PO**.
 
+### Design Thinking lens for UI/UX reviews (IxDF + NN/g; required)
+Use this lens to avoid “screen-by-screen critique” and instead connect UI to user needs, assumptions, and outcomes. Design thinking is iterative and non-linear; use it as scaffolding, not a rigid recipe.
+
+- **Empathize (Hiểu người dùng & ngữ cảnh)**:
+  - Ask/confirm: What does RM **do, say, think, feel** in this flow? What is the real environment (on-the-go, one-handed, network)?
+  - Review checks: friction points, error-prone steps, moments of uncertainty, cognitive load, context switching.
+- **Define (Định nghĩa vấn đề đúng)**:
+  - Convert findings into a clear **problem statement** (1–2 sentences) and a **success metric** (time-to-context, error rate, adoption, data quality).
+  - Warning: “Great UI solving the wrong problem will fail.” (NN/g)
+- **Ideate (Mở rộng phương án)**:
+  - Produce 2–4 solution options per P0 issue (direct fix vs pattern vs strategic), explicitly stating trade-offs.
+- **Prototype (Tạo phương án kiểm chứng)**:
+  - Recommend low-cost prototypes: flow map, wireframe, state frames, microcopy variants, token-binding trials.
+  - In Figma: define exactly what to prototype (which frames/states) and what to measure.
+- **Test (Kiểm chứng với người dùng/đánh giá)**:
+  - Define what to test and how: 5-user test, scenario-based tasks, time-on-task, error count, comprehension checks for KPI acronyms.
+  - If no user test is possible, propose a “proxy test”: internal RM SME review + heuristic + analytics hypotheses.
+- **Implement (Đưa vào vận hành)** (NN/g includes implement):
+  - Ensure fixes are not only proposed but translated into DS components/states/tokens and tracked in backlog with acceptance criteria.
+
+#### DT usage rules (required)
+- Before final conclusions, always answer: **What assumption are we making? How could it be wrong? What evidence would falsify it?**
+- Prioritize by risk: **P0 flows** and **high-risk compliance/PII** flows need stronger evidence and clearer guardrails.
+- Connect every major critique to **behavior → outcome** (already required by Outcome impact analysis).
+
 ### Vietnam banking terminology (glossary; required)
 Use these terms consistently when they appear in UI/flows (especially KPI dashboards and portfolio views). Format: **Tiếng Việt — (English acronym)**: 1-line meaning. Add tooltip/legend recommendations when the term is shown to RM.
 
@@ -353,6 +378,24 @@ Return results in this exact structure (Vietnamese only):
 ### VI — Evidence
 - Screenshots (frame name + nodeId + short caption):
 
+### VI — Problem framing (required; Design Thinking → measurable review)
+- **Problem statement (1–2 câu)**:
+  - `RM Retail cần <job-to-be-done> trong <context> nhưng hiện tại <pain>, dẫn đến <outcome xấu>.`
+- **Hypothesis (giả thuyết cải tiến)**:
+  - `Nếu chúng ta <change> thì RM sẽ <behavior change> và <metric> sẽ cải thiện.`
+- **Assumptions (3–5 bullet; phải falsifiable)**:
+  - `A1: ... (có thể sai vì ...)`
+  - `A2: ...`
+- **Success metrics (chọn 2–5; có baseline/target nếu có)**:
+  - Time-to-context (s):
+  - Time-to-complete (s) / taps / screens / scrolls:
+  - Error rate (validation errors / mis-taps / wrong selections):
+  - Adoption proxy (tỷ lệ “được làm trong CRM” vs “làm ngoài”):
+  - Data quality proxy (duplicate, missing fields, stale data):
+- **How to test (1–3 bullet)**:
+  - 5-user scenario test / RM SME review / prototype comparison
+  - what to measure + pass/fail threshold
+
 ### VI — Scorecard (P0/P1/P2)
 - Pass/Conditional/Fail:
 - P0 highlights:
@@ -404,7 +447,21 @@ Return results in this exact structure (Vietnamese only):
 
 ### VI — User stories (tự suy ra từ flow/thiết kế; required)
 - **Persona**:
-- **User story list** (mỗi story 1 dòng, theo format):\n+  - `As a <persona>, I want to <goal>, so that <benefit>.`\n+    - **Trigger / Entry point**:\n+    - **Main steps (happy path)**:\n+    - **States/edge cases cần có**: loading/error/empty/offline/sync/permission (nếu applicable)\n+    - **Success criteria (observable)**:\n+    - **Risks** (data loss/compliance/confusion/time cost):\n+    - **Evidence**: frame nodeIds + screenshot refs\n+- **Coverage note**: nếu thiếu evidence cho edge cases → ghi rõ “Not verifiable” thay vì đoán.
+- **User story list** (required; each story must be prioritized):
+  - `As a <persona>, I want to <action>, so that <outcome>.`
+    - **P-level (P0/P1/P2)**: Must/Should/Nice for RM to complete the job.
+    - **Score (0–2)**: how well the current design supports this story (0 fail / 1 partial / 2 good).
+    - **Severity (S0–S3)**: derived when Score < 2 (use mapping rules).
+    - **Output (deliverable/result)**: user receives/creates/updates what? (e.g., saved note, created task, updated status, exported report, confirmed KPI view).
+    - **Outcome (value)**: why it matters (time saved, risk reduced, better decision, higher conversion, lower compliance risk).
+    - **Trigger / Entry point**:
+    - **Main steps (happy path)**:
+    - **States/edge cases cần có**: loading/error/empty/offline/sync/permission (nếu applicable)
+    - **Success criteria (observable)**:
+    - **Risks** (data loss/compliance/confusion/time cost):
+    - **Evidence**: frame name + nodeIds + screenshot refs
+    - **Linked findings**: reference IssueIDs (if any) that block or degrade this story.
+- **Coverage note**: nếu thiếu evidence cho edge cases → ghi rõ “Not verifiable” thay vì đoán.
 
 ### VI — Issue log (Expected vs Observed)
 - IssueID:
